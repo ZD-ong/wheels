@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Dialog</title>
+    <style>
+        .dialog {
+            background: rgba(0,0,0,0.5);
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .dialog-wrapper {
+            background: #fff;
+            padding: 20px;
+            min-width: 200px;
+        }
+        .dialog-header {
+            border-bottom: 1px solid #eee;
+        }
+        .dialog-main {
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+        .dialog-footer {
+            text-align: right;
+        }
+        .dialog-footer button {
+            margin-left: 6px;
+        }
+    </style>
+</head>
+<body>
+    <button id="x">Click</button>
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+        class Dialog {
+            constructor(options){
+                this.options = options
+                this.init()
+            }
+            init(){
+                let {
+                    title, content, buttons
+                } = this.options
+                let $buttons = buttons.map((buttonOption)=>{
+                    let $b = $('<button></button>')
+                    $b.text(buttonOption.text)
+                    $b.on('click', buttonOption.action)
+                    return $b
+                })
+                var template =`
+                    <div class="dialog">
+                        <div class="dialog-wrapper">
+                            <header class="dialog-header">${title}</header>
+                            <main class="dialog-main">${content}</main>
+                            <footer class="dialog-footer"></footer>
+                        </div>
+                    </div>
+                `
+                var $dialog = $(template)
+                $dialog.find('footer').append($buttons)
+                this.$dialog = $dialog
+            }
+            open(){
+                this.$dialog.appendTo('body')
+            }
+            close(){
+                this.$dialog.detach()
+            }
+        }
+        
+        x.onclick = function(){
+            var dialog = new Dialog({
+                title: 'Title',
+                content: '<b>Welcome</b>',
+                buttons: [{
+                    text: 'OK',
+                    action: function () {
+                        setTimeout(() => {
+                            dialog.close()
+                        })
+                    }
+                }, {
+                    text: 'Cancle',
+                    action: function () {
+                        dialog.close()
+                    }
+                }]
+            })
+            dialog.open()
+        }
+        
+        
+    </script>
+</body>
+</html>
