@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
     <title>Tabs</title>
     <style>
         .tabs > ol {
@@ -11,8 +12,26 @@
             margin: 0;
             padding: 0;
         }
-        .tabs .tabs-bar {
-            
+        .tabs > .tabs-bar {
+            display: flex;
+        }
+        .tabs > .tabs-bar > li {
+            padding: 4px 8px;
+            border: 1px solid transparent;
+            border-bottom: 0;
+        }
+        .tabs > .tabs-bar > li:hover {
+            border-color: red
+        }
+        .tabs > .tabs-bar > li.active {
+            border-color: blue;
+        }
+        .tabs > .tabs-content > li {
+            display: none;
+            border: 1px solid black;
+        }
+        .tabs > .tabs-content > li.active {
+            display: block;
         }
     </style>
 </head>
@@ -29,5 +48,68 @@
             <li>content 3</li>
         </ol>
     </div>
+    <div class="tabs">
+        <ol class="tabs-bar">
+            <li>1</li>
+            <li>2</li>
+            <li>3</li>
+        </ol>
+        <ol class="tabs-content">
+            <li>content 1</li>
+            <li>content 2</li>
+            <li>content 3</li>
+        </ol>
+    </div>
+    <script>
+        // ES 5
+        // function Tabs(selector){
+        //     this.element = $(selector)
+        //     this.init()
+        //     this.bindEvents()
+        // }
+        // Tabs.prototype.init = function(){
+        //     this.element.each(function (index, element) {
+        //         $(element).children('.tabs-bar').children('li').eq(0).addClass('active')
+        //         $(element).children('.tabs-content').children('li').eq(0).addClass('active')
+        //     })
+        // }
+        // Tabs.prototype.bindEvents = function(){
+        //     $('.tabs').on('click', '.tabs-bar > li', function (e) {
+        //         var $li = $(e.currentTarget)
+        //         $li.addClass('active').siblings().removeClass('active')
+        //         var index = $li.index()
+        //         var $content = $li.closest('.tabs').find('.tabs-content > li').eq(index)
+        //         $content.addClass('active').siblings().removeClass('active')
+        //     })
+        // }
+
+        // ES 6
+        class Tabs {
+            constructor(selector){
+                this.element = $(selector)
+                this.init()
+                this.bindEvents()
+            }
+            init(){
+                this.element.each(function (index, element) {
+                    $(element).children('.tabs-bar').children('li').eq(0).addClass('active')
+                    $(element).children('.tabs-content').children('li').eq(0).addClass('active')
+                })
+            }
+            bindEvents(){
+                $('.tabs').on('click', '.tabs-bar > li', function (e) {
+                    var $li = $(e.currentTarget)
+                    $li.addClass('active').siblings().removeClass('active')
+                    var index = $li.index()
+                    var $content = $li.closest('.tabs').find('.tabs-content > li').eq(index)
+                    $content.addClass('active').siblings().removeClass('active')
+                })
+            }
+            
+        }
+
+        var tabs = new Tabs('.tabs')
+
+    </script>
 </body>
 </html>
