@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Sticky</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        #topbar {
+            background: #aaa;
+            height: 60px;
+            color: white;
+            text-align: center;
+        }
+        .sticky {
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+        #topbar.sticky {
+            width: 100%;
+        }
+        main {
+            background: #ddd;
+            height: 800px;
+        }
+    </style>
+</head>
+
+<body>
+        <div id="topbar">
+            Sticky
+        </div>
+    <main>
+        <p>p1</p>
+        <p>p2</p>
+        <p>p3</p>
+        <p>p4</p>
+        <p>p5</p>
+        <p>p6</p>
+        <p>p7</p>
+        <p>p8</p>
+        <p>p9</p>
+        <p>p10</p>
+        <button>Sticky Button</button>
+        <p>p11</p>
+    </main>
+    <script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+        // ES 5
+        // var topbarOffset = $('#topbar').offset()
+        // var buttonOffset = $('button').offset()
+        // $(window).on('scroll', function () {
+        //     var scrollY = window.scrollY
+        //     if (scrollY + 0 > topbarOffset.top) {
+        //         $('#topbar').addClass('sticky')
+        //     }else{
+        //         $('#topbar').removeClass('sticky')
+        //     }
+
+        //     if (scrollY + 60 > buttonOffset.top) {
+        //         $('button').addClass('sticky')
+        //     } else {
+        //         $('button').removeClass('sticky')
+        //     }
+        // })
+        // var sticky = new Sticky(selector, n)
+
+        // ES 6
+        class Sticky {
+            constructor(selector, n){
+                this.elements = $(selector)
+                this.offset = n || 0
+                this.addPlaceholder()
+                this.cacheOffset()
+                this.listenToScroll()
+            }
+            addPlaceholder(){
+                this.elements.each((index,element)=>{
+                    $(element).wrap('<div class="stickyPlaceholder"></div>') //迫不得已违反正交
+                    $(element).parent().height($(element).height())           
+                })
+            }
+            // 缓存元素 offset
+            cacheOffset(){
+                this.offsets = []
+                this.elements.each((index, element)=>{
+                    this.offsets[index] = $(element).offset()
+                })
+            }
+            // 监听 scroll
+            listenToScroll(){
+                $(window).on('scroll',()=>{
+                    var scrollY = window.scrollY
+                    this.elements.each((index, element)=>{
+                        var $element = $(element)
+                        if(scrollY + this.offset > this.offsets[index].top){
+                            $element.addClass('sticky').css({top: this.offset}) //迫不得已违反正交
+                        }else{
+                            $element.removeClass('sticky')
+                        }
+                    }) 
+                })
+            }
+        }
+        new Sticky('#topbar')
+        new Sticky('button',60)
+    </script>
+</body>
+
+</html>
