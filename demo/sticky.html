@@ -7,37 +7,41 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Sticky</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        #topbar {
-            background: #aaa;
-            height: 60px;
-            color: white;
-            text-align: center;
-        }
         .sticky {
             position: fixed;
             top: 0;
             left: 0;
         }
-        #topbar.sticky {
-            width: 100%;
+
+        /*-------------------*/
+
+        * {
+            margin: 0;
+            padding: 0;
         }
+
+        #topbar {
+            background: #888;
+            height: 60px;
+            color: white;
+            text-align: center;
+        }
+
         main {
             background: #ddd;
-            height: 800px;
+            height: 1800px;
+        }
+
+        #topbar.sticky {
+            width: 100%;
         }
     </style>
 </head>
 
 <body>
-        <div id="topbar">
-            Sticky
-        </div>
+    <div id="topbar">
+        Sticky
+    </div>
     <main>
         <p>p1</p>
         <p>p2</p>
@@ -75,43 +79,45 @@
 
         // ES 6
         class Sticky {
-            constructor(selector, n){
+            constructor(selector, n) {
                 this.elements = $(selector)
                 this.offset = n || 0
                 this.addPlaceholder()
-                this.cacheOffset()
+                this.cacheOffsets()
                 this.listenToScroll()
             }
-            addPlaceholder(){
-                this.elements.each((index,element)=>{
-                    $(element).wrap('<div class="stickyPlaceholder"></div>') //迫不得已违反正交
-                    $(element).parent().height($(element).height())           
+            addPlaceholder() {
+
+                this.elements.each((index, element) => {
+                    $(element).wrap('<div class="stickyPlaceholder"></div>')
+                    $(element).parent().height($(element).height())
                 })
             }
-            // 缓存元素 offset
-            cacheOffset(){
+            cacheOffsets() {
                 this.offsets = []
-                this.elements.each((index, element)=>{
+                this.elements.each((index, element) => {
                     this.offsets[index] = $(element).offset()
                 })
             }
-            // 监听 scroll
-            listenToScroll(){
-                $(window).on('scroll',()=>{
+            listenToScroll() {
+                $(window).on('scroll', () => {
                     var scrollY = window.scrollY
-                    this.elements.each((index, element)=>{
+                    this.elements.each((index, element) => {
                         var $element = $(element)
-                        if(scrollY + this.offset > this.offsets[index].top){
-                            $element.addClass('sticky').css({top: this.offset}) //迫不得已违反正交
-                        }else{
+                        if (scrollY + this.offset > this.offsets[index].top) {
+                            $element.addClass('sticky')
+                                .css({ top: this.offset })
+                        } else {
                             $element.removeClass('sticky')
                         }
-                    }) 
+                    })
                 })
             }
         }
+
         new Sticky('#topbar')
-        new Sticky('button',60)
+        new Sticky('button', 60)
+
     </script>
 </body>
 
