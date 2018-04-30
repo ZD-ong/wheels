@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Slides</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<style>
+  .window {
+    position: relative;
+    width: 400px;
+    height: 300px;
+    margin: 30px auto;
+    overflow: hidden;
+  }
+
+  .window ul,
+  .window li {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .window .img-ct {
+    position: absolute;
+  }
+
+  .window .img-ct:after {
+    content: '';
+    display: block;
+    clear: both;
+  }
+
+  .window .img-ct>li {
+    float: left;
+  }
+
+  .window .img-ct img {
+    width: 400px;
+    height: 300px;
+  }
+
+  .window .arrow {
+    position: absolute;
+    top: 50%;
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 1px solid #fff;
+    line-height: 30px;
+    color: #fff;
+    text-align: center;
+    text-decoration: none;
+  }
+
+  .window .pre {
+    left: 10px;
+  }
+
+  .window .next {
+    right: 10px;
+  }
+
+  .window .button {
+    position: absolute;
+    bottom: 10px;
+    width: 100%;
+    font-size: 0;
+    z-index: 1;
+    text-align: center;
+  }
+
+  .window .button>li {
+    display: inline-block;
+    width: 30px;
+    height: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin: 0 3px;
+    cursor: pointer;
+  }
+
+  .window .button>li.active {
+    background-color: #ccc;
+  }
+</style>
+
+<body>
+
+  <div class="window">
+    <ul class="img-ct">
+      <li>
+        <a href="#">
+          <img src="https://i.loli.net/2018/04/30/5ae71865d909e.png" alt="图片" width="400" height="300">
+        </a>
+      </li>
+      <li>
+        <a href="#">
+          <img src="https://i.loli.net/2018/04/30/5ae71879ad902.png" alt="图片" width="400" height="300">
+        </a>
+      </li>
+      <li>
+        <a href="#">
+          <img src="https://i.loli.net/2018/04/30/5ae7188b4beea.png" alt="图片" width="400" height="300">
+        </a>
+      </li>
+      <li>
+        <a href="#">
+          <img src="https://i.loli.net/2018/04/30/5ae7189b7e03d.png" alt="图片" width="400" height="300">
+        </a>
+      </li>
+      <li>
+        <a href="#">
+          <img src="https://i.loli.net/2018/04/30/5ae718b30c109.png" alt="图片" width="400" height="300">
+        </a>
+      </li>
+    </ul>
+    <a class="pre arrow" href="#">&lt;</a>
+    <a class="next arrow" href="#">&gt;</a>
+    <ul class="button">
+      <li class="active"></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+    </ul>
+  </div>
+
+  <script src="./jquery-3.2.1.min.js"></script>
+  <script>
+    function Carousel($ct) {
+      this.init($ct)
+      this.bind()
+      this.autoPlay()
+    }
+
+
+    Carousel.prototype = {
+      constructor: Carousel,
+      init: function ($ct) {
+        this.$ct = $ct
+        this.$imgCt = this.$ct.find('.img-ct')
+        this.$imgs = this.$ct.find('.img-ct > li')
+        this.$preBtn = this.$ct.find('.pre')
+        this.$nextBtn = this.$ct.find('.next')
+        this.$button = this.$ct.find('.button li')
+
+        this.imgWidth = this.$imgs.width()
+        this.imgCount = this.$imgs.length
+        this.index = 0
+
+        this.$imgCt.append(this.$imgs.first().clone())
+        this.$imgCt.prepend(this.$imgs.last().clone())
+        this.$imgCt.width((this.imgCount + 2) * this.imgWidth)
+        this.$imgCt.css({ left: '-' + this.imgWidth + 'px' })
+      },
+      bind: function () {
+        var _this = this
+        this.$preBtn.on('click', function () {
+          console.log('pre...')
+          _this.playPre(1)
+        })
+        this.$nextBtn.on('click', function () {
+          console.log('next...')
+          _this.playNext(1)
+        })
+        this.$button.on('click', function () {
+          var index = $(this).index()
+          if (_this.index > index) {
+            _this.playPre(_this.index - index)
+          } else {
+            _this.playNext(index - _this.index)
+          }
+        })
+
+
+      },
+      playNext: function (len) {
+        var _this = this
+        this.$imgCt.animate({ left: '-=' + this.imgWidth * len }, function () {
+          _this.index += len
+          if (_this.index === _this.imgCount) {
+            _this.$imgCt.css({ left: '-' + _this.imgWidth + 'px' })
+            _this.index = 0
+          }
+          _this.setButton()
+        })
+      },
+      playPre: function (len) {
+        var _this = this
+        this.$imgCt.animate({ left: '+=' + this.imgWidth * len }, function () {
+          _this.index -= len
+          if (_this.index < 0) {
+            _this.$imgCt.css('left', -_this.imgWidth * _this.imgCount)
+            _this.index = _this.imgCount - 1
+          }
+          _this.setButton()
+        })
+      },
+      setButton: function () {
+        this.$button.eq(this.index).addClass('active')
+          .siblings().removeClass('active')
+      },
+      autoPlay: function () {
+        var _this = this
+        var timer = setInterval(function () {
+          _this.playNext(1)
+        }, 1000)
+        $('.window').on('mouseenter', function () {
+          window.clearInterval(timer)
+        })
+        $('.window').on('mouseleave', function () {
+          timer = setInterval(function () {
+            _this.playNext(1)
+          }, 1000)
+        })
+      }
+    }
+
+    new Carousel($('.window').eq(0))
+
+
+  </script>
+</body>
+
+</html>
