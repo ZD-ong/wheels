@@ -1,5 +1,8 @@
 # wheels
 
+- [waterfall](https://zd-ong.github.io/wheels/demo/waterfall.html)
+
+    瀑布流组件，调整窗口大小后布局自适应
 - [LazyLoad](https://zd-ong.github.io/wheels/demo/lazyload.html)
 
     图片懒加载组件，可将 Network 调整至 slow 3G 查看效果
@@ -16,6 +19,4 @@
 - [Tabs](https://zd-ong.github.io/wheels/demo/tabs.html)
 
     Tab 组件，点击 tab 切换内容，组件之间不相互影响
-- [waterfall](https://zd-ong.github.io/wheels/demo/waterfall.html)
 
-    瀑布流组件，调整窗口大小后布局自适应
